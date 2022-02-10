@@ -1,0 +1,11 @@
+{
+  "esversion": 9,
+  "node": true,
+  "globals": {
+    "module": true,
+    "exports": true,
+    "require": false,
+    "it": true,
+    "describe": true
+  }
+}
