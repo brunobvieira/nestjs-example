@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Response } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Connection } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { PaginatedQueryDto } from '../../shared/dtos/paginatedQuery.dto';
@@ -17,6 +17,7 @@ export class UserController {
     description: 'Return user created',
     type: User
   })
+  @ApiBadRequestResponse()
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.connection.transaction(async (transactionManager) => {
@@ -37,20 +38,35 @@ export class UserController {
     description: 'Return user found',
     type: User
   })
+  @ApiNotFoundResponse()
   @Get(':id')
-  getUser(@Param('id') id: string) {
+  async sgetUser(@Param('id') id: string) {
     return this.userService.getUserById(id);
   }
 
+  @ApiOkResponse({
+    description: 'Return user updated',
+    type: User
+  })
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.connection.transaction(async (transactionManager) => {
       return this.userService.updateUser(id, updateUserDto, transactionManager);
     });
   }
 
-  //@todo updateUser
-  //@todo deleteUser
+  @ApiNoContentResponse({description: 'No content'})
+  @ApiNotFoundResponse()
+  @HttpCode(204)
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string) {
+    return this.connection.transaction(async (transactionManager) => {
+      return this.userService.deleteUser(id, transactionManager);
+    });
+  }
+
   //@todo protect endpoints
   //@todo login endpoint with jwt
 }

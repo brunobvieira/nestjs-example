@@ -59,6 +59,17 @@ export class UserService {
     return user;
   }
 
+  async deleteUser(id: string, transactionManager: EntityManager) {
+    const userRepository = transactionManager.getRepository(User);
+
+    let found = await userRepository.findOne(id);
+    if (!found) {
+      throw new NotFoundException('User not found.');
+    }
+
+    await userRepository.remove(found);
+  }
+
   async getUserById(id: string): Promise<User> {
     let idRegex = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
     if (!idRegex.test(id)) {
