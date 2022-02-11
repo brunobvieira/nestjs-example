@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { UUIDVersion } from 'class-validator';
 import { Connection } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { PaginatedQueryDto } from '../../shared/dtos/paginatedQuery.dto';
 import { PaginatedResponseDto } from '../../shared/dtos/paginatedResponse.dto';
 import { CreateUserDto } from './dtos/createUser.dto';
+import { UpdateUserDto } from './dtos/updateUser.dto';
 import { UserService } from './user.service';
 
 @ApiTags('users')
@@ -41,4 +41,16 @@ export class UserController {
   getUser(@Param('id') id: string) {
     return this.userService.getUserById(id);
   }
+
+  @Put(':id')
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.connection.transaction(async (transactionManager) => {
+      return this.userService.updateUser(id, updateUserDto, transactionManager);
+    });
+  }
+
+  //@todo updateUser
+  //@todo deleteUser
+  //@todo protect endpoints
+  //@todo login endpoint with jwt
 }
