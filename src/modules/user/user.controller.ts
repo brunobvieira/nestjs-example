@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Response } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Response, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Connection } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { PaginatedQueryDto } from '../../shared/dtos/paginatedQuery.dto';
 import { PaginatedResponseDto } from '../../shared/dtos/paginatedResponse.dto';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { UserService } from './user.service';
@@ -18,6 +19,7 @@ export class UserController {
     type: User
   })
   @ApiBadRequestResponse()
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.connection.transaction(async (transactionManager) => {
@@ -29,6 +31,7 @@ export class UserController {
     description: 'Return user created',
     type: PaginatedResponseDto
   })
+  @UseGuards(JwtAuthGuard)
   @Get()
   async listUsers(@Query() params: PaginatedQueryDto) {
     return this.userService.listUsersPaginated(params);
@@ -39,6 +42,7 @@ export class UserController {
     type: User
   })
   @ApiNotFoundResponse()
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async sgetUser(@Param('id') id: string) {
     return this.userService.getUserById(id);
@@ -50,6 +54,7 @@ export class UserController {
   })
   @ApiNotFoundResponse()
   @ApiBadRequestResponse()
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.connection.transaction(async (transactionManager) => {
@@ -59,6 +64,7 @@ export class UserController {
 
   @ApiNoContentResponse({description: 'No content'})
   @ApiNotFoundResponse()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
@@ -66,7 +72,4 @@ export class UserController {
       return this.userService.deleteUser(id, transactionManager);
     });
   }
-
-  //@todo protect endpoints
-  //@todo login endpoint with jwt
 }

@@ -1,11 +1,22 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Not, ObjectLiteral, QueryBuilder, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  EntityManager,
+  Not,
+  ObjectLiteral,
+  QueryBuilder,
+  Repository,
+  SelectQueryBuilder
+} from 'typeorm';
 import { hash } from 'bcrypt';
 import { User } from '../../entities/user.entity';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { PaginatedQueryDto } from '../../shared/dtos/paginatedQuery.dto';
-import { PaginationHelper } from '../../shared/helpers/pagination.helper';
+import * as PaginationHelper from '../../shared/helpers/pagination.helper';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 
 @Injectable()
@@ -15,7 +26,10 @@ export class UserService {
     private userRepository: Repository<User>
   ) {}
 
-  async createuser(createUserDto: CreateUserDto, transactionManager: EntityManager): Promise<User> {
+  async createuser(
+    createUserDto: CreateUserDto,
+    transactionManager: EntityManager
+  ): Promise<User> {
     const userRepository = transactionManager.getRepository(User);
 
     const found = await userRepository.findOne({ email: createUserDto.email });
@@ -34,7 +48,11 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto, transactionManager: EntityManager): Promise<User> {
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    transactionManager: EntityManager
+  ): Promise<User> {
     const userRepository = transactionManager.getRepository(User);
     let { password, passwordCOnfirmation, ...rest } = updateUserDto;
 
@@ -44,7 +62,10 @@ export class UserService {
     }
 
     if (updateUserDto.email) {
-      const emailAlredyInUse = await userRepository.findOne({ email: updateUserDto.email, id: Not(found.id) });
+      const emailAlredyInUse = await userRepository.findOne({
+        email: updateUserDto.email,
+        id: Not(found.id)
+      });
       if (emailAlredyInUse) {
         throw new BadRequestException('This email has already been taken.');
       }
@@ -71,7 +92,9 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<User> {
-    let idRegex = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
+    let idRegex = new RegExp(
+      /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+    );
     if (!idRegex.test(id)) {
       throw new BadRequestException('Invalid id.');
     }
@@ -102,13 +125,20 @@ export class UserService {
     return PaginationHelper.formatData(res, limit, page);
   }
 
-  createUsersPaginatedWhere(qb: SelectQueryBuilder<User>, params: Record<string, any>) {
+  createUsersPaginatedWhere(
+    qb: SelectQueryBuilder<User>,
+    params: Record<string, any>
+  ) {
     if (params.query) {
       qb.andWhere('user.name ILIKE :query', { query: `%${params.query}%` });
     }
   }
 
   async findOneWithPassword(where: ObjectLiteral): Promise<User | undefined> {
-    return this.userRepository.createQueryBuilder('user').addSelect('password').where(where).getOne();
+    return this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('(user.password) as user_password')
+      .where(where)
+      .getOne();
   }
 }
