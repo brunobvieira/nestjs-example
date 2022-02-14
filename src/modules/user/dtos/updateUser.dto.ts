@@ -1,6 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, MaxLength, IsString, IsEmail, MinLength, IsOptional, ValidateIf } from 'class-validator';
+import {
+  IsNotEmpty,
+  MaxLength,
+  IsString,
+  IsEmail,
+  MinLength,
+  IsOptional,
+  ValidateIf,
+  IsArray,
+  ArrayMinSize
+} from 'class-validator';
 import { Match } from '../../../shared/decorators/match.decorator';
+import { Role } from '../../../shared/enums/role.enum';
 
 export class UpdateUserDto {
   @ApiProperty()
@@ -28,4 +39,10 @@ export class UpdateUserDto {
   @MinLength(8)
   @IsString()
   passwordCOnfirmation?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @ArrayMinSize(1)
+  roles: Role[];
 }

@@ -40,6 +40,7 @@ export class UserService {
     let user = new User();
     user.name = createUserDto.name;
     user.email = createUserDto.email;
+    user.roles = createUserDto.roles;
     user.password = await hash(createUserDto.password, 10);
 
     user = await userRepository.save(user);
@@ -140,5 +141,9 @@ export class UserService {
       .addSelect('(user.password) as user_password')
       .where(where)
       .getOne();
+  }
+
+  async findOne(where: any): Promise<User | undefined> {
+    return this.userRepository.findOne(where);
   }
 }

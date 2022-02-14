@@ -2,9 +2,12 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Respo
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Connection } from 'typeorm';
 import { User } from '../../entities/user.entity';
+import { Roles } from '../../shared/decorators/roles.decorator';
 import { PaginatedQueryDto } from '../../shared/dtos/paginatedQuery.dto';
 import { PaginatedResponseDto } from '../../shared/dtos/paginatedResponse.dto';
+import { Role } from '../../shared/enums/role.enum';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
+import { RolesGuard } from '../../shared/guards/roles.guard';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { UserService } from './user.service';
@@ -19,7 +22,8 @@ export class UserController {
     type: User
   })
   @ApiBadRequestResponse()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.connection.transaction(async (transactionManager) => {
@@ -31,7 +35,8 @@ export class UserController {
     description: 'Return user created',
     type: PaginatedResponseDto
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Get()
   async listUsers(@Query() params: PaginatedQueryDto) {
     return this.userService.listUsersPaginated(params);
@@ -42,9 +47,10 @@ export class UserController {
     type: User
   })
   @ApiNotFoundResponse()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Get(':id')
-  async sgetUser(@Param('id') id: string) {
+  async getUser(@Param('id') id: string) {
     return this.userService.getUserById(id);
   }
 
@@ -54,7 +60,8 @@ export class UserController {
   })
   @ApiNotFoundResponse()
   @ApiBadRequestResponse()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Put(':id')
   async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.connection.transaction(async (transactionManager) => {
@@ -64,7 +71,8 @@ export class UserController {
 
   @ApiNoContentResponse({description: 'No content'})
   @ApiNotFoundResponse()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @HttpCode(204)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {

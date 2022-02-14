@@ -10,6 +10,7 @@ import { getAppSecret } from '../../shared/helpers/enviroment.helper';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from '../../shared/strategies/jwt.strategy';
+import { RolesGuard } from '../../shared/guards/roles.guard';
 
 @Module({
   imports: [

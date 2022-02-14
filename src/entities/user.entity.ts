@@ -25,7 +25,8 @@ export class User {
 
   @Column({ select: false })
   password: string;
-
+  
+  @ApiProperty()
   @Column({ type: 'jsonb', default: `'[]'` })
   roles: Role[];
 
