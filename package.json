@@ -1,8 +1,8 @@
 {
   "name": "test-project",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Simple crud with nestjs",
+  "author": "Bruno Beserra Vieira",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
