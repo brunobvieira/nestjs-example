@@ -1,7 +1,7 @@
 /* jshint -W014 */
 
 const dbConfig = {
-  logging: true,
+  logging: process.env.DBLOG ? process.env.DBLOG == 'true' : false,
   type: 'postgres',
   host: process.env.DBHOST ? process.env.DBHOST : 'localhost',
   port: process.env.DBPORT ? process.env.DBPORT : 5432,
