@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Not, QueryBuilder, Repository, SelectQueryBuilder } from 'typeorm';
+import { EntityManager, Not, ObjectLiteral, QueryBuilder, Repository, SelectQueryBuilder } from 'typeorm';
 import { hash } from 'bcrypt';
 import { User } from '../../entities/user.entity';
 import { CreateUserDto } from './dtos/createUser.dto';
@@ -106,5 +106,9 @@ export class UserService {
     if (params.query) {
       qb.andWhere('user.name ILIKE :query', { query: `%${params.query}%` });
     }
+  }
+
+  async findOneWithPassword(where: ObjectLiteral): Promise<User | undefined> {
+    return this.userRepository.createQueryBuilder('user').addSelect('password').where(where).getOne();
   }
 }
