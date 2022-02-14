@@ -36,7 +36,7 @@ export class UserController {
     type: PaginatedResponseDto
   })
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.User)
+  @Roles(Role.User, Role.Admin)
   @Get()
   async listUsers(@Query() params: PaginatedQueryDto) {
     return this.userService.listUsersPaginated(params);
@@ -48,7 +48,7 @@ export class UserController {
   })
   @ApiNotFoundResponse()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.User)
+  @Roles(Role.User, Role.Admin)
   @Get(':id')
   async getUser(@Param('id') id: string) {
     return this.userService.getUserById(id);
