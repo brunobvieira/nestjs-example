@@ -4,34 +4,41 @@ Simple user CRUD with [Nest](https://github.com/nestjs/nest).
 
 ## Installation
 
+
 ```bash
-$ npm install
+$ yarn install
 ```
 
 ## Running the app
 
 ```bash
+# create the config file
+$ cp .env.example .env
+
 # development
-$ npm run start
+$ yarn start
 
 # watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ yarn start:dev
 ```
 
-## Test
+## Running with docker
 
 ```bash
-# unit tests
-$ npm run test
+# create the config file
+$ cp .env.example .env
 
-# e2e tests
-$ npm run test:e2e
+# up
+$ docker-compose up
 
-# test coverage
-$ npm run test:cov
+# up detached mode
+$ docker-compose up -d
+
+# up force build
+$ docker-compose up --build
+
+#down
+$ docker-compose down
 ```
 
 ## License
