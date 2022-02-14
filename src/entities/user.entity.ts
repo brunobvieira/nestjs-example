@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { CreateUserDto } from '../modules/user/dtos/createUser.dto';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { Role } from '../shared/enums/role.enum';
 
 @Entity({ schema: 'users', name: 'users' })
 export class User {
@@ -18,6 +25,9 @@ export class User {
 
   @Column({ select: false })
   password: string;
+
+  @Column({ type: 'jsonb', default: `'[]'` })
+  roles: Role[];
 
   @ApiProperty()
   @CreateDateColumn()

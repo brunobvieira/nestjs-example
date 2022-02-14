@@ -13,42 +13,42 @@ export class createUsersTable1644515793588 implements MigrationInterface {
             isPrimary: true,
             isUnique: true,
             generationStrategy: 'uuid',
-            default: `uuid_generate_v4()`,
+            default: `uuid_generate_v4()`
           },
           {
             name: 'name',
             type: 'varchar',
             length: '100',
-            isNullable: false,
+            isNullable: false
           },
           {
             name: 'email',
             type: 'varchar',
             length: '100',
             isUnique: true,
-            isNullable: false,
+            isNullable: false
           },
           {
             name: 'password',
             type: 'varchar',
             length: '100',
-            isNullable: false,
+            isNullable: false
           },
           {
             name: 'createdAt',
             type: 'timestamp',
             default: 'now()',
-            isNullable: false,
+            isNullable: false
           },
           {
             name: 'updatedAt',
             type: 'timestamp',
             default: 'now()',
-            isNullable: false,
+            isNullable: false
           },
-          { name: 'deletedAt', type: 'timestamp', isNullable: true },
-        ],
-      }),
+          { name: 'deletedAt', type: 'timestamp', isNullable: true }
+        ]
+      })
     );
   }
 
