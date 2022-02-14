@@ -1,9 +1,7 @@
 /* jshint -W014 */
-const { join } = require('path');
-const nodeEnv = process.env.NODE_ENV;
 
 module.exports = {
-  logging: process.env.DBLOG ? process.env.DBLOG == 'TRUE' : false,
+  logging: true,
   type: 'postgres',
   host: process.env.DBHOST ? process.env.DBHOST : 'localhost',
   port: process.env.DBPORT ? process.env.DBPORT : 5432,
@@ -13,6 +11,6 @@ module.exports = {
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/database/migrations/**/*.js'],
   cli: {
-    migrationsDir: 'src/database/migrations',
-  },
+    migrationsDir: 'src/database/migrations'
+  }
 };
